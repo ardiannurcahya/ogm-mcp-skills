@@ -1,4 +1,4 @@
-"""Automatic Skill and Harness MCP Configuration installer for ogm-mcp-skills."""
+"""Automatic Skill and Multi-Agent Harness MCP Configuration installer for ogm-mcp-skills."""
 
 from __future__ import annotations
 
@@ -32,21 +32,52 @@ def setup_harnesses(
     installed_skills: list[str] = []
     installed_configs: list[str] = []
 
-    # 1. Google Antigravity / Gemini CLI Skill
-    antigravity_skill_dir = home / ".gemini" / "config" / "skills" / "ogm"
-    try:
-        antigravity_skill_dir.mkdir(parents=True, exist_ok=True)
-        (antigravity_skill_dir / "SKILL.md").write_text(skill_text, encoding="utf-8")
-        installed_skills.append(str(antigravity_skill_dir / "SKILL.md"))
-    except Exception as err:
-        logger.warning(f"Could not install Antigravity skill: {err}")
+    # 1. Google Antigravity Skills (Global & CLI)
+    for antigravity_skill_dir in (
+        home / ".gemini" / "config" / "skills" / "ogm",
+        home / ".gemini" / "antigravity-cli" / "skills" / "ogm",
+    ):
+        try:
+            antigravity_skill_dir.mkdir(parents=True, exist_ok=True)
+            (antigravity_skill_dir / "SKILL.md").write_text(skill_text, encoding="utf-8")
+            installed_skills.append(str(antigravity_skill_dir / "SKILL.md"))
+        except Exception as err:
+            logger.warning(f"Could not install Antigravity skill at {antigravity_skill_dir}: {err}")
 
     # 2. Antigravity MCP Config
     antigravity_mcp_path = home / ".gemini" / "antigravity-cli" / "mcp_config.json"
     if _merge_mcp_config_json(antigravity_mcp_path, base_url, project_id, api_key):
         installed_configs.append(str(antigravity_mcp_path))
 
-    # 3. Claude Desktop MCP Config (Windows / macOS)
+    # 3. Cursor MCP Config & Rules
+    cursor_mcp_path = home / ".cursor" / "mcp.json"
+    if _merge_mcp_config_json(cursor_mcp_path, base_url, project_id, api_key):
+        installed_configs.append(str(cursor_mcp_path))
+
+    cursor_rules_dir = home / ".cursor" / "rules"
+    try:
+        cursor_rules_dir.mkdir(parents=True, exist_ok=True)
+        cursor_rule_file = cursor_rules_dir / "ogm.mdc"
+        if not cursor_rule_file.exists():
+            rule_content = (
+                "---\n"
+                "description: OpenGraphMemory knowledge graph, hybrid RAG, codebase AST, and persistent memory\n"
+                "globs: *\n"
+                "alwaysApply: false\n"
+                "---\n\n"
+                "# OpenGraphMemory (OGM) Cursor Rules\n\n"
+                "When diagnosing bugs, exploring code, or persisting solutions, use the `ogm` MCP tools:\n"
+                "- Before modifying code: call `ogm_recall_code_memory` and `ogm_retrieval_query`.\n"
+                "- Before refactoring: call `ogm_search_code_symbols` and `ogm_get_code_call_graph`.\n"
+                "- While editing: call `ogm_sync_code_file`.\n"
+                "- After tests pass: call `ogm_record_code_fix`.\n"
+            )
+            cursor_rule_file.write_text(rule_content, encoding="utf-8")
+            installed_skills.append(str(cursor_rule_file))
+    except Exception as err:
+        logger.warning(f"Could not install Cursor rule: {err}")
+
+    # 4. Claude Desktop MCP Config (Windows / macOS)
     claude_config_path = (
         home / "AppData" / "Roaming" / "Claude" / "claude_desktop_config.json"
         if sys.platform == "win32"
@@ -59,6 +90,13 @@ def setup_harnesses(
     if claude_config_path.parent.exists():
         if _merge_mcp_config_json(claude_config_path, base_url, project_id, api_key):
             installed_configs.append(str(claude_config_path))
+
+    # 5. OpenClaw MCP Config
+    openclaw_dir = home / ".openclaw"
+    if openclaw_dir.exists():
+        openclaw_config = openclaw_dir / "openclaw.json"
+        if _merge_mcp_config_json(openclaw_config, base_url, project_id, api_key):
+            installed_configs.append(str(openclaw_config))
 
     return {
         "ok": True,

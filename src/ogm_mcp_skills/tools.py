@@ -147,6 +147,52 @@ async def get_relation_evidence(
         relation_id,
     )
 
+async def retrieval_query(
+    client: OGMClient, arguments: Mapping[str, Any]
+) -> dict[str, Any]:
+    require_read("graph:read")
+    _arguments(
+        arguments,
+        {
+            "dataset_id",
+            "query",
+            "q",
+            "mode",
+            "top_k",
+            "limit",
+            "vector_weight",
+            "graph_weight",
+            "compare",
+        },
+    )
+    dataset_id = _route_component(arguments.get("dataset_id"), "dataset_id", 1)
+    query_val = str(arguments.get("query") or arguments.get("q") or "")[:500]
+    if not query_val:
+        raise ValidationError("Parameter 'query' or 'q' is required.")
+
+    top_k = arguments.get("top_k") or arguments.get("limit") or 10
+    if type(top_k) is not int or not 1 <= top_k <= 50:
+        raise ValidationError("top_k must be an integer from 1 to 50")
+
+    payload: dict[str, Any] = {
+        "dataset_id": dataset_id,
+        "query": query_val,
+        "mode": str(arguments.get("mode") or "hybrid"),
+        "top_k": top_k,
+    }
+    if "vector_weight" in arguments and arguments["vector_weight"] is not None:
+        payload["vector_weight"] = float(arguments["vector_weight"])
+    if "graph_weight" in arguments and arguments["graph_weight"] is not None:
+        payload["graph_weight"] = float(arguments["graph_weight"])
+    if "compare" in arguments and arguments["compare"] is not None:
+        payload["compare"] = bool(arguments["compare"])
+
+    response = await client.request("POST", "/v1/retrieval/query", json=payload)
+    return envelope(
+        response.json(),
+        provenance={"project_id": client.project_id, "dataset_id": dataset_id},
+    )
+
 
 async def _get(
     client: OGMClient,

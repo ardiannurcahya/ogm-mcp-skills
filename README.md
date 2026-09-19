@@ -1,6 +1,6 @@
 # ogm-mcp-skills
 
-MCP stdio server and AI Agent Skills from Claude Code, OpenCode, Antigravity, and Hermes to OpenGraphMemory and the Codebase Knowledge Graph.
+MCP stdio server and AI Agent Skills for Google Antigravity, Cursor, Claude Code, OpenCode, Hermes Agent, OpenClaw, and OpenAI Codex to OpenGraphMemory and the Codebase Knowledge Graph.
 
 The MCP server uses authenticated OpenGraphMemory REST APIs only. It is stateless: no local database, session mapping, direct PostgreSQL, Neo4j, or object-store access.
 
@@ -20,6 +20,7 @@ Alpha. PyPI releases are published from GitHub Actions on `v*` tags. Source inst
 - `ogm_get_graph`
 - `ogm_get_evidence`
 - `ogm_get_relation_evidence`
+- `ogm_retrieval_query`
 - `ogm_upload_document`
 - `ogm_memory_list_episodes`
 - `ogm_memory_get_episode`
@@ -37,6 +38,7 @@ Alpha. PyPI releases are published from GitHub Actions on `v*` tags. Source inst
 - `ogm_recall_code_memory`
 - `ogm_record_code_fix`
 - `ogm_sync_code_file`
+- `ogm_index_codebase`
 
 
 Read tools inspect PostgreSQL-authoritative graph and Agent Memory data. Agent Memory results are historical claims: inspect recorded evidence and verifiers before relying on them. `personal-safe` permits reviewed document upload, additive Agent Memory records, and code sync; `memory-curator` additionally permits memory feedback and supersession. No delete, admin, project-create, relation-review, analytics-refresh, semantic-retrieval, or automatic conversation-ingestion tools exist.

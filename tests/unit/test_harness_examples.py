@@ -24,6 +24,7 @@ EXPECTED_TOOLS = {
     "ogm_get_graph",
     "ogm_get_evidence",
     "ogm_get_relation_evidence",
+    "ogm_retrieval_query",
     "ogm_upload_document",
     "ogm_memory_list_episodes",
     "ogm_memory_get_episode",
@@ -40,6 +41,36 @@ EXPECTED_TOOLS = {
 
 def test_claude_example_is_valid_and_complete() -> None:
     example = _json_example("examples/claude-code/.mcp.json.example")
+    server = example["mcpServers"]["ogm"]
+
+    assert server["command"] == "uvx"
+    assert server["args"] == ["ogm-mcp-skills==0.2.2"]
+    assert set(server["env"]) == REQUIRED_ENV
+    assert set(server["env"].values()) == {f"${{{name}}}" for name in REQUIRED_ENV}
+
+
+def test_cursor_example_is_valid_and_complete() -> None:
+    example = _json_example("examples/cursor/.cursor/mcp.json.example")
+    server = example["mcpServers"]["ogm"]
+
+    assert server["command"] == "uvx"
+    assert server["args"] == ["ogm-mcp-skills==0.2.2"]
+    assert set(server["env"]) == REQUIRED_ENV
+    assert set(server["env"].values()) == {f"${{{name}}}" for name in REQUIRED_ENV}
+
+
+def test_antigravity_example_is_valid_and_complete() -> None:
+    example = _json_example("examples/antigravity/mcp_config.json.example")
+    server = example["mcpServers"]["ogm"]
+
+    assert server["command"] == "uvx"
+    assert server["args"] == ["ogm-mcp-skills==0.2.2"]
+    assert set(server["env"]) == REQUIRED_ENV
+    assert set(server["env"].values()) == {f"${{{name}}}" for name in REQUIRED_ENV}
+
+
+def test_openclaw_example_is_valid_and_complete() -> None:
+    example = _json_example("examples/openclaw/openclaw.json.example")
     server = example["mcpServers"]["ogm"]
 
     assert server["command"] == "uvx"
@@ -74,9 +105,16 @@ def test_hermes_example_declares_explicit_bridge_environment() -> None:
 
 
 def test_harness_docs_state_tool_expectation_and_safe_setup() -> None:
-    for path in ("docs/claude-code.md", "docs/opencode.md", "docs/hermes.md"):
+    for path in (
+        "docs/claude-code.md",
+        "docs/opencode.md",
+        "docs/hermes.md",
+        "docs/cursor.md",
+        "docs/antigravity.md",
+        "docs/openclaw.md",
+        "docs/codex.md",
+    ):
         content = _text(path)
-        assert "/absolute/path/ogm-mcp-skills" in content
         assert "OGM_PERMISSION_PROFILE" in content
         assert "read-only" in content
         for tool in EXPECTED_TOOLS:

@@ -27,6 +27,7 @@ TOOLS = {
     "ogm_get_graph",
     "ogm_get_evidence",
     "ogm_get_relation_evidence",
+    "ogm_retrieval_query",
     "ogm_upload_document",
     "ogm_memory_list_episodes",
     "ogm_memory_get_episode",

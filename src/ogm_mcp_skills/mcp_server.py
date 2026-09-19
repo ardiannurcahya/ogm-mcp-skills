@@ -48,6 +48,7 @@ from ogm_mcp_skills.tools import (
     get_relation_evidence,
     get_subgraph,
     list_datasets,
+    retrieval_query,
     search_entities,
 )
 
@@ -172,6 +173,34 @@ def create_server(settings: Settings | None = None) -> FastMCP:
             resolved_settings,
             get_relation_evidence,
             _defined(dataset_id=dataset_id, relation_id=relation_id, limit=limit),
+        )
+
+    @server.tool(
+        description="Query Hybrid RAG engine (dense vector pgvector + knowledge graph traversal via RRF) to find relevant code, documentation, and evidence with line-level citations. Best for answering architecture questions or finding relevant symbols."
+    )
+    async def ogm_retrieval_query(
+        dataset_id: str,
+        query: str,
+        mode: str = "hybrid",
+        top_k: int | None = None,
+        limit: int | None = None,
+        vector_weight: float | None = None,
+        graph_weight: float | None = None,
+        compare: bool | None = None,
+    ) -> dict[str, Any]:
+        return await _call(
+            resolved_settings,
+            retrieval_query,
+            _defined(
+                dataset_id=dataset_id,
+                query=query,
+                mode=mode,
+                top_k=top_k,
+                limit=limit,
+                vector_weight=vector_weight,
+                graph_weight=graph_weight,
+                compare=compare,
+            ),
         )
 
     @server.tool(description="Upload regular local file to configured project dataset.")

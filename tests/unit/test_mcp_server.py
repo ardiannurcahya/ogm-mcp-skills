@@ -49,6 +49,7 @@ async def test_server_exposes_explicit_read_tool_schemas() -> None:
         "ogm_get_graph",
         "ogm_get_evidence",
         "ogm_get_relation_evidence",
+        "ogm_retrieval_query",
         "ogm_upload_document",
         "ogm_memory_list_episodes",
         "ogm_memory_get_episode",
@@ -79,6 +80,10 @@ async def test_server_exposes_explicit_read_tool_schemas() -> None:
     assert tools["ogm_get_relation_evidence"]["required"] == [
         "dataset_id",
         "relation_id",
+    ]
+    assert tools["ogm_retrieval_query"]["required"] == [
+        "dataset_id",
+        "query",
     ]
     upload = tools["ogm_upload_document"]
     assert upload["required"] == ["dataset_id", "path"]
