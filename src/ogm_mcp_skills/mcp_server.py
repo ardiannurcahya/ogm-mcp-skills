@@ -176,7 +176,7 @@ def create_server(settings: Settings | None = None) -> FastMCP:
         )
 
     @server.tool(
-        description="Query Hybrid RAG engine (dense vector pgvector + knowledge graph traversal via RRF) to find relevant code, documentation, and evidence with line-level citations. Best for answering architecture questions or finding relevant symbols."
+        description="Query Hybrid RAG engine (dense vector pgvector + knowledge graph traversal via RRF) with line-level citations. Supports RAG tuning via 'compare=True' (side-by-side vector vs graph comparison) and dynamic weight calibration ('vector_weight', 'graph_weight'). Use with 'ogm_memory_search' to recall past retrieval failures and 'ogm_memory_record_outcome' to persist optimal tuning parameters."
     )
     async def ogm_retrieval_query(
         dataset_id: str,
