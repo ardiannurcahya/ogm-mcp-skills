@@ -39,10 +39,14 @@ def setup_harnesses(
     ):
         try:
             antigravity_skill_dir.mkdir(parents=True, exist_ok=True)
-            (antigravity_skill_dir / "SKILL.md").write_text(skill_text, encoding="utf-8")
+            (antigravity_skill_dir / "SKILL.md").write_text(
+                skill_text, encoding="utf-8"
+            )
             installed_skills.append(str(antigravity_skill_dir / "SKILL.md"))
         except Exception as err:
-            logger.warning(f"Could not install Antigravity skill at {antigravity_skill_dir}: {err}")
+            logger.warning(
+                f"Could not install Antigravity skill at {antigravity_skill_dir}: {err}"
+            )
 
     # 2. Antigravity MCP Config
     antigravity_mcp_path = home / ".gemini" / "antigravity-cli" / "mcp_config.json"

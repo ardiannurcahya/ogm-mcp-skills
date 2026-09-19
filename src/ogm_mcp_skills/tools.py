@@ -147,6 +147,7 @@ async def get_relation_evidence(
         relation_id,
     )
 
+
 async def retrieval_query(
     client: OGMClient, arguments: Mapping[str, Any]
 ) -> dict[str, Any]:
