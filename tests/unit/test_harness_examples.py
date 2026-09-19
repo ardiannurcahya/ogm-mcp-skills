@@ -121,6 +121,20 @@ def test_harness_docs_state_tool_expectation_and_safe_setup() -> None:
             assert tool in content
 
 
+def test_agents_md_example_is_complete() -> None:
+    content = _text("examples/AGENTS.md.example")
+    assert "OpenGraphMemory (OGM) Always-On Agent Operating Directive" in content
+    assert "ogm_recall_code_memory" in content
+    assert "ogm_retrieval_query" in content
+    assert "ogm_search_code_symbols" in content
+    assert "ogm_get_code_call_graph" in content
+    assert "ogm_sync_code_file" in content
+    assert "ogm_record_code_fix" in content
+    assert "Failure-Driven Hybrid RAG Tuning" in content
+    assert "ogm_list_datasets" in content
+    assert "dataset_id" in content
+
+
 def _json_example(path: str) -> dict[str, Any]:
     return json.loads(_text(path))
 
