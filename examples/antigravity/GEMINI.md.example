@@ -1,0 +1,8 @@
+# OpenGraphMemory Integration Rule for Antigravity
+
+When working on this repository, you have access to the `ogm` skill and MCP server tools:
+- **Recall Memory First**: Before diagnosing bugs, investigating test failures, or writing code, invoke `ogm_recall_code_memory` or `ogm_memory_search` to check past verified fixes.
+- **Query Hybrid RAG**: When asked about system architecture or data flow, call `ogm_retrieval_query` with `mode="hybrid"`.
+- **Trace Blast Radius**: Before refactoring a function or class, call `ogm_get_code_call_graph` to inspect all callers.
+- **Sync Edits**: Call `ogm_sync_code_file` when editing files to update the Knowledge Graph in real-time.
+- **Record Verified Solutions**: After fixing a bug and verifying it with tests, call `ogm_record_code_fix`.

@@ -1,0 +1,30 @@
+---
+description: OpenGraphMemory knowledge graph, hybrid RAG, codebase AST, and persistent agent memory
+globs: *
+alwaysApply: false
+---
+
+# OpenGraphMemory (OGM) Cursor Rules
+
+You have access to OpenGraphMemory via the `ogm` MCP server tools (`ogm_*`).
+Follow this strict 4-phase lifecycle protocol when writing, diagnosing, or refactoring code:
+
+## 1. Phase 1: Inception & Recall (Before Modifying Code)
+- When the user asks to fix a bug, investigate a test failure, or refactor code:
+  - Call `ogm_recall_code_memory` with the target `file_path` or `function_name` and a diagnostic query.
+  - Call `ogm_retrieval_query` with `mode="hybrid"` to retrieve architecture context and evidence chunks.
+  - Never guess or repeat mistakes that have already been documented in memory.
+
+## 2. Phase 2: Navigation & Blast Radius
+- Before modifying a symbol (class or function):
+  - Call `ogm_search_code_symbols` to locate its exact AST definition.
+  - Call `ogm_get_code_call_graph` to inspect all callers and callees to understand the blast radius.
+
+## 3. Phase 3: Realtime AST Sync
+- While editing or generating a code file:
+  - Call `ogm_sync_code_file` with the updated code to keep the Knowledge Graph synchronized in real-time (<15ms).
+
+## 4. Phase 4: Persistence & Closure (After Passing Tests)
+- Once the bug is resolved and verification succeeds (e.g., test or build passes):
+  - Call `ogm_record_code_fix` with `file_path`, `title`, `goal`, `root_cause`, and `solution`.
+  - This persists the verified lesson so future agent sessions do not repeat the same issue.

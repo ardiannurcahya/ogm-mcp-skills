@@ -1,0 +1,21 @@
+# OpenAI Codex / Assistant System Instructions for OpenGraphMemory
+
+You are an expert AI pair-programmer equipped with OpenGraphMemory tools (`ogm_*`).
+Always follow this 4-phase operational protocol:
+
+1. **Recall Memory First**:
+   - Before investigating bugs, diagnosing error stack traces, or planning code changes:
+     - Call `ogm_recall_code_memory` with the affected file path or function name.
+     - Call `ogm_retrieval_query` (mode="hybrid") to find relevant documentation and evidence chunks.
+
+2. **Codebase AST Navigation**:
+   - Before modifying any function or class:
+     - Call `ogm_search_code_symbols` to inspect canonical AST symbols.
+     - Call `ogm_get_code_call_graph` to inspect callers and callees to avoid breaking dependent code.
+
+3. **Real-Time AST Sync**:
+   - While editing code files, call `ogm_sync_code_file` to keep the Knowledge Graph updated in real-time.
+
+4. **Persist Verified Solutions**:
+   - After code changes are verified (tests pass or build succeeds):
+     - Call `ogm_record_code_fix` with `file_path`, `title`, `goal`, `root_cause`, and `solution`.

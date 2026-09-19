@@ -1,0 +1,7 @@
+# OpenGraphMemory Directive for Claude Code
+
+When working on this repository, you have access to the `ogm` MCP server tools:
+1. **Recall Memory**: Before diagnosing bugs or investigating test failures, call `ogm_recall_code_memory` or `ogm_memory_search`.
+2. **Hybrid RAG**: Call `ogm_retrieval_query` with `mode="hybrid"` to query system architecture or locate documentation evidence.
+3. **AST Exploration**: Before refactoring functions/classes, call `ogm_search_code_symbols` and `ogm_get_code_call_graph`.
+4. **Persist Solutions**: After fixing an issue and verifying with tests, call `ogm_record_code_fix`.

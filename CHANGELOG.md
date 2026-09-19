@@ -2,6 +2,29 @@
 
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.3] - 2026-09-19
+
+### Added
+
+- **Hybrid RAG MCP Tool (`ogm_retrieval_query`)**:
+  - Connects to OpenGraphMemory v0.3.0 `POST /v1/retrieval/query` fusing dense vector search (`pgvector`) and knowledge graph traversal via Reciprocal Rank Fusion (RRF).
+- **Multi-Agent Harness Support**:
+  - **Cursor**: Workspace MCP config (`.cursor/mcp.json`) and MDC rule (`.cursor/rules/ogm.mdc`).
+  - **Google Antigravity**: Workspace project skills (`.agents/skills/ogm/SKILL.md`) and global MCP config (`~/.gemini/antigravity-cli/mcp_config.json`).
+  - **OpenClaw**: MCP server configuration (`openclaw.json`) and agent prompt template.
+  - **OpenAI Codex**: System instructions template for OpenAI Assistant and Codex workflows.
+  - **Claude Code**: Project directive (`CLAUDE.md`) for autonomous pair-programming memory recall and persistence.
+- **Agent Lifecycle Trigger Matrix**:
+  - 4-phase operational protocol in `SKILL.md`: *Phase 1: Inception/Recall* ➡️ *Phase 2: Navigation/Blast Radius* ➡️ *Phase 3: Live Code Sync* ➡️ *Phase 4: Persistence/Closure*.
+- **Enhanced Auto-Installer (`ogm-mcp-skills setup`)**:
+  - Detects and automatically configures Cursor, Antigravity, Claude Desktop, and OpenClaw.
+
+### Changed
+
+- Updated harness documentation and examples across all supported agents.
+
+---
+
 ## [0.1.8] - 2026-08-11
 
 ### Added

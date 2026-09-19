@@ -62,6 +62,20 @@ Twenty-one tools. Project calls use configured project and return `{ok,data,prov
 
 `GET /v1/datasets/{dataset_id}/relations/{relation_id}/evidence`. `dataset_id` and `relation_id` required; optional `limit` is 1..100.
 
+## `ogm_retrieval_query`
+
+`POST /v1/retrieval/query`. Executes Hybrid RAG combining dense vector search (`pgvector`) and knowledge graph traversal via Reciprocal Rank Fusion (RRF). Available to all profiles.
+
+| Argument | Rule |
+|---|---|
+| `dataset_id` | Required non-empty string. |
+| `query` / `q` | Required string up to 500 chars. |
+| `mode` | Optional string: `hybrid` (default), `vector`, or `graph`. |
+| `top_k` / `limit` | Optional integer 1..50 (default 10). |
+| `vector_weight` | Optional float 0.0..1.0 (default 0.5). |
+| `graph_weight` | Optional float 0.0..1.0 (default 0.5). |
+| `compare` | Optional boolean (returns side-by-side comparison when true). |
+
 ## `ogm_upload_document`
 
 Multipart `POST /v1/datasets/{dataset_id}/documents`. Only `personal-safe` permits upload, and `OGM_UPLOAD_ROOTS` must be configured.
