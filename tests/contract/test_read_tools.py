@@ -8,6 +8,7 @@ from ogm_mcp_skills.tools import (
     get_graph,
     get_relation_evidence,
     list_datasets,
+    retrieval_query,
 )
 
 
@@ -90,5 +91,37 @@ async def test_graph_read_validation(settings: Settings) -> None:
     with pytest.raises(ValidationError):
         await get_relation_evidence(
             client, {"dataset_id": "dataset", "relation_id": "", "limit": 1}
+        )
+    await client.aclose()
+
+
+@pytest.mark.asyncio
+async def test_retrieval_query_validation(settings: Settings) -> None:
+    client = OGMClient(settings)
+    # top_k validation
+    with pytest.raises(ValidationError, match="top_k"):
+        await retrieval_query(client, {"dataset_id": "d", "query": "q", "top_k": 0})
+    with pytest.raises(ValidationError, match="top_k"):
+        await retrieval_query(client, {"dataset_id": "d", "query": "q", "top_k": 51})
+    with pytest.raises(ValidationError, match="top_k"):
+        await retrieval_query(client, {"dataset_id": "d", "query": "q", "top_k": "10"})
+    with pytest.raises(ValidationError, match="top_k"):
+        await retrieval_query(client, {"dataset_id": "d", "query": "q", "limit": 0})
+    # weight validation
+    with pytest.raises(ValidationError, match="vector_weight"):
+        await retrieval_query(
+            client, {"dataset_id": "d", "query": "q", "vector_weight": -0.1}
+        )
+    with pytest.raises(ValidationError, match="vector_weight"):
+        await retrieval_query(
+            client, {"dataset_id": "d", "query": "q", "vector_weight": 1.5}
+        )
+    with pytest.raises(ValidationError, match="vector_weight"):
+        await retrieval_query(
+            client, {"dataset_id": "d", "query": "q", "vector_weight": float("nan")}
+        )
+    with pytest.raises(ValidationError, match="graph_weight"):
+        await retrieval_query(
+            client, {"dataset_id": "d", "query": "q", "graph_weight": float("inf")}
         )
     await client.aclose()

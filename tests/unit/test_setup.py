@@ -30,3 +30,13 @@ def test_setup_harnesses(tmp_path: Path, monkeypatch: Any) -> None:
     assert "mcpServers" in cursor_mcp.read_text(encoding="utf-8")
     cursor_rule = tmp_path / ".cursor" / "rules" / "ogm.mdc"
     assert cursor_rule.exists()
+
+
+def test_merge_mcp_config_json_safely_skips_malformed(tmp_path: Path) -> None:
+    from ogm_mcp_skills.setup import _merge_mcp_config_json
+
+    broken_file = tmp_path / "broken.json"
+    broken_file.write_text("{ broken json", encoding="utf-8")
+    res = _merge_mcp_config_json(broken_file, "http://localhost:8000", None, None)
+    assert res is False
+    assert broken_file.read_text(encoding="utf-8") == "{ broken json"

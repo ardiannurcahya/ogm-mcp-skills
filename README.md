@@ -1,4 +1,21 @@
+<div align="center">
+
 # ogm-mcp-skills
+
+**MCP Server & AI Agent Skills for OpenGraphMemory and Codebase Knowledge Graphs.**
+
+[![CI](https://github.com/ardiannurcahya/ogm-mcp-skills/actions/workflows/ci.yml/badge.svg)](https://github.com/ardiannurcahya/ogm-mcp-skills/actions/workflows/ci.yml)
+[![PyPI version](https://img.shields.io/pypi/v/ogm-mcp-skills.svg)](https://pypi.org/project/ogm-mcp-skills/)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![MCP Protocol](https://img.shields.io/badge/MCP-1.0+-green.svg)](https://modelcontextprotocol.io/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Ruff](https://img.shields.io/badge/Linter-Ruff-D7FF64.svg)](https://docs.astral.sh/ruff/)
+
+[Overview](#status) · [Tools (29)](#tools) · [Installation](#install) · [Quick Setup](#automated-1-command-setup) · [Client Configs](#mcp-client-setup)
+
+</div>
+
+---
 
 MCP stdio server and AI Agent Skills for Google Antigravity, Cursor, Claude Code, OpenCode, Hermes Agent, OpenClaw, and OpenAI Codex to OpenGraphMemory and the Codebase Knowledge Graph.
 
@@ -54,7 +71,9 @@ uv tool install ogm-mcp-skills
 Or run without installing:
 
 ```bash
-uvx ogm-mcp-skills==0.2.2 --version
+uvx ogm-mcp-skills==0.2.3 --version
+```
+
 ### Automated 1-Command Setup
 
 Automatically copy `SKILL.md` and merge MCP server configuration into your installed agent harness (Antigravity, Gemini CLI, Claude Desktop, Cursor, etc.):
@@ -109,7 +128,7 @@ Add MCP server config to project `.mcp.json`:
   "mcpServers": {
     "ogm": {
       "command": "uvx",
-      "args": ["ogm-mcp-skills==0.2.2"],
+      "args": ["ogm-mcp-skills==0.2.3"],
       "env": {
         "OGM_BASE_URL": "${OGM_BASE_URL}",
         "OGM_API_KEY": "${OGM_API_KEY}",
@@ -136,7 +155,7 @@ Add MCP server config to `opencode.json` or `opencode.jsonc`:
   "mcp": {
     "ogm": {
       "type": "local",
-      "command": ["uvx", "ogm-mcp-skills==0.2.2"],
+      "command": ["uvx", "ogm-mcp-skills==0.2.3"],
       "environment": {
         "OGM_BASE_URL": "{env:OGM_BASE_URL}",
         "OGM_API_KEY": "{env:OGM_API_KEY}",
@@ -160,7 +179,7 @@ mcp_servers:
   ogm:
     command: "uvx"
     args:
-      - "ogm-mcp-skills==0.2.2"
+      - "ogm-mcp-skills==0.2.3"
     env:
       OGM_BASE_URL: "${OGM_BASE_URL}"
       OGM_API_KEY: "${OGM_API_KEY}"

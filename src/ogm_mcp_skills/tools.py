@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from collections.abc import Mapping
 from typing import Any
 
@@ -148,6 +149,15 @@ async def get_relation_evidence(
     )
 
 
+def _validate_weight(name: str, value: Any) -> float:
+    if type(value) not in (int, float) or isinstance(value, bool):
+        raise ValidationError(f"{name} must be a number from 0.0 to 1.0")
+    weight = float(value)
+    if not math.isfinite(weight) or not 0.0 <= weight <= 1.0:
+        raise ValidationError(f"{name} must be a number from 0.0 to 1.0")
+    return weight
+
+
 async def retrieval_query(
     client: OGMClient, arguments: Mapping[str, Any]
 ) -> dict[str, Any]:
@@ -171,8 +181,14 @@ async def retrieval_query(
     if not query_val:
         raise ValidationError("Parameter 'query' or 'q' is required.")
 
-    top_k = arguments.get("top_k") or arguments.get("limit") or 10
-    if type(top_k) is not int or not 1 <= top_k <= 50:
+    if "top_k" in arguments and arguments["top_k"] is not None:
+        top_k = arguments["top_k"]
+    elif "limit" in arguments and arguments["limit"] is not None:
+        top_k = arguments["limit"]
+    else:
+        top_k = 10
+
+    if type(top_k) is not int or isinstance(top_k, bool) or not 1 <= top_k <= 50:
         raise ValidationError("top_k must be an integer from 1 to 50")
 
     payload: dict[str, Any] = {
@@ -182,9 +198,13 @@ async def retrieval_query(
         "top_k": top_k,
     }
     if "vector_weight" in arguments and arguments["vector_weight"] is not None:
-        payload["vector_weight"] = float(arguments["vector_weight"])
+        payload["vector_weight"] = _validate_weight(
+            "vector_weight", arguments["vector_weight"]
+        )
     if "graph_weight" in arguments and arguments["graph_weight"] is not None:
-        payload["graph_weight"] = float(arguments["graph_weight"])
+        payload["graph_weight"] = _validate_weight(
+            "graph_weight", arguments["graph_weight"]
+        )
     if "compare" in arguments and arguments["compare"] is not None:
         payload["compare"] = bool(arguments["compare"])
 

@@ -118,9 +118,19 @@ def _merge_mcp_config_json(
         config: dict[str, Any] = {}
         if config_path.exists():
             try:
-                config = json.loads(config_path.read_text(encoding="utf-8"))
-            except Exception:
-                config = {}
+                loaded = json.loads(config_path.read_text(encoding="utf-8"))
+                if isinstance(loaded, dict):
+                    config = loaded
+                else:
+                    logger.warning(
+                        f"Existing config at '{config_path}' is not a JSON object; skipping merge to avoid data loss."
+                    )
+                    return False
+            except Exception as err:
+                logger.warning(
+                    f"Existing config at '{config_path}' has malformed JSON ({err}); skipping merge to avoid data loss."
+                )
+                return False
 
         if "mcpServers" not in config or not isinstance(config["mcpServers"], dict):
             config["mcpServers"] = {}
