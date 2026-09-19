@@ -3,26 +3,32 @@
 When working in this repository, you have access to the `ogm` MCP server tools (`ogm_*`).
 You **MUST ALWAYS** follow this operational protocol without waiting for explicit prompt triggers:
 
+## 0. Dataset Context Setup (Before Phase 1)
+Identify or create the codebase dataset and retain its ID for the session:
+1. Call `ogm_list_datasets` to find the `dataset_id` for this repository.
+2. If none exists, call `ogm_index_codebase(dataset_id="<repo-name>", path=".")` and retain the returned `dataset_id`.
+3. Use this `dataset_id` in all subsequent codebase, retrieval, and sync calls.
+
 ## 1. Recall Memory First (Phase 1)
 - Before diagnosing errors, investigating test failures, or proposing code modifications:
-  - Call `ogm_recall_code_memory` with the target `file_path` or `function_name`.
-  - Call `ogm_memory_search` with the problem signature to inspect past attempts and solutions.
-  - Call `ogm_retrieval_query` (`mode="hybrid"`) to query architecture specs with line-level citations.
+  - Call `ogm_recall_code_memory(q="<error or function>", file_path="<path>")`.
+  - Call `ogm_memory_search(q="<problem summary>", problem_signature="<signature>")`.
+  - Call `ogm_retrieval_query(dataset_id="<dataset_id>", query="<architecture question>", mode="hybrid")`.
 
 ## 2. Navigation & Blast Radius (Phase 2)
 - Before altering any class or function:
-  - Call `ogm_search_code_symbols` to inspect exact AST symbol signatures.
-  - Call `ogm_get_code_call_graph` to inspect callers and callees across the codebase.
+  - Call `ogm_search_code_symbols(dataset_id="<dataset_id>", q="<symbol_name>")` to inspect exact AST symbol signatures.
+  - Call `ogm_get_code_call_graph(entity_id="<symbol_id>")` to inspect callers and callees across the codebase.
 
 ## 3. Real-Time AST Sync (Phase 3)
 - While editing or generating code:
-  - Call `ogm_sync_code_file` immediately after modifying a file to keep the Knowledge Graph synchronized (<15ms).
+  - Call `ogm_sync_code_file(dataset_id="<dataset_id>", file_path="<path>", code="<full_contents>", language="<lang>")` immediately after modifying a file to keep the Knowledge Graph synchronized (<15ms).
 
 ## 4. Failure-Driven Hybrid RAG Tuning (Phase 4)
 - When querying documentation or architecture:
-  - Use `ogm_retrieval_query` with `compare=True` to evaluate `vector` vs `graph` results.
-  - If a retrieval query fails or misses multi-hop links, log the failed attempt via `ogm_memory_append_attempt(result="failed")`.
+  - Use `ogm_retrieval_query(dataset_id="<dataset_id>", query="<question>", compare=True)` to evaluate `vector` vs `graph` results.
+  - If a retrieval query fails or misses multi-hop links, log the failed attempt via `ogm_memory_append_attempt(episode_id="<id>", hypothesis="<hypothesis>", result="failed")`.
 
 ## 5. Persist Verified Solutions (Phase 5)
 - Once code changes are verified (tests pass or build succeeds):
-  - Call `ogm_record_code_fix` with `file_path`, `title`, `goal`, `root_cause`, and verified `solution`.
+  - Call `ogm_record_code_fix(file_path="<path>", title="<title>", goal="<goal>", root_cause="<cause>", solution="<solution>")`.

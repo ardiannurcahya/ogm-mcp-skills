@@ -131,6 +131,8 @@ def test_agents_md_example_is_complete() -> None:
     assert "ogm_sync_code_file" in content
     assert "ogm_record_code_fix" in content
     assert "Failure-Driven Hybrid RAG Tuning" in content
+    assert "ogm_list_datasets" in content
+    assert "dataset_id" in content
 
 
 def _json_example(path: str) -> dict[str, Any]:
