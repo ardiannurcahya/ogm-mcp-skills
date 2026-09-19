@@ -76,6 +76,15 @@ Twenty-one tools. Project calls use configured project and return `{ok,data,prov
 | `graph_weight` | Optional float 0.0..1.0 (default 0.5). |
 | `compare` | Optional boolean (returns side-by-side comparison when true). |
 
+### Hybrid RAG Tuning with Failure-Driven Memory
+Agents can tune retrieval precision and prevent hallucinations by combining `ogm_retrieval_query` with Agent Memory:
+1. **Pre-flight Failure Recall**: Query `ogm_memory_search` or `ogm_recall_code_memory` before difficult retrieval tasks to recall known failure patterns or previously calibrated weights.
+2. **Ablation Comparison**: Pass `compare=true` to evaluate parallel `vector`, `graph`, and `hybrid` results side-by-side.
+3. **Weight Calibration**:
+   - If multi-hop entity relations or call paths are missing, increase `graph_weight` (e.g. `0.7..0.9`) or set `mode="graph"`.
+   - If vocabulary is descriptive or entities are sparse, increase `vector_weight` (e.g. `0.7..0.9`) or set `mode="vector"`.
+4. **Failure & Outcome Persistence**: Log failed attempts via `ogm_memory_append_attempt(result="failed")` or downvote with `ogm_memory_feedback_episode(score=-1)`. Record successful tuned weights with `ogm_memory_record_outcome` to promote the configuration pattern.
+
 ## `ogm_upload_document`
 
 Multipart `POST /v1/datasets/{dataset_id}/documents`. Only `personal-safe` permits upload, and `OGM_UPLOAD_ROOTS` must be configured.

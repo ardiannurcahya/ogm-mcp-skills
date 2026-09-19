@@ -107,6 +107,29 @@ Follow this 4-phase protocol during all pair-programming and engineering session
 
 ---
 
+### 🔄 Category 5: Failure-Driven Hybrid RAG Tuning Protocol
+**English Triggers:**
+* *"Tune RAG retrieval for query X using failure memory"*
+* *"Compare vector vs graph retrieval for Y"*
+* *"Why did RAG retrieve the wrong context for Z?"*
+* *"Ablate retrieval weights vector_weight vs graph_weight"*
+
+**Indonesian Triggers:**
+* *"Tuning RAG query X pakai memory kegagalan"*
+* *"Bandingkan hasil vector dan graph retrieval untuk Y"*
+* *"Kenapa retrieval RAG salah mengambil konteks untuk Z?"*
+* *"Kalibrasi bobot vector_weight dan graph_weight untuk query ini"*
+
+**Action Protocol:**
+1. **Pre-flight Failure Recall**: Call `ogm_memory_search(q="retrieval failure <topic>", problem_signature="rag_retrieval_<dataset>")` or `ogm_recall_code_memory` before difficult queries to check if past attempts failed due to vector hallucination or graph sparsity.
+2. **Ablation & Comparison**: Call `ogm_retrieval_query` with `compare=True`. Examine parallel scores for `vector`, `graph`, and `hybrid`.
+   - If multi-hop relations/callers are missing: increase `graph_weight` (`0.7..0.9`) or set `mode="graph"`.
+   - If terminology is paraphrased or entities are sparse: increase `vector_weight` (`0.7..0.9`) or set `mode="vector"`.
+3. **Failure Logging**: If retrieval fails to return the required context leading to an incorrect agent response, log the failed attempt via `ogm_memory_append_attempt(episode_id, hypothesis="vector_weight=0.5 failed to find callers", result="failed")` or downvote via `ogm_memory_feedback_episode(score=-1)`.
+4. **Persistence & Pattern Promotion**: Once the optimal weights/mode successfully retrieve the correct evidence, record the verified outcome via `ogm_memory_record_outcome` or `ogm_record_code_fix` with the tuned `vector_weight`, `graph_weight`, and `mode` in the `lesson` field. This promotes the pattern via Bayesian confidence scoring so future agent sessions inherit the tuned parameters.
+
+---
+
 ## 🛠️ Complete 22-Tool MCP Cheat Sheet & Zero-Loop Rules
 
 ### Zero-Loop Policy & Direct Tool Execution
@@ -116,7 +139,7 @@ Follow this 4-phase protocol during all pair-programming and engineering session
 
 | Category | MCP Tool Name | Primary Parameters & Aliases | Purpose |
 | :--- | :--- | :--- | :--- |
-| **Hybrid RAG** | `ogm_retrieval_query` | `dataset_id`, `query`, `mode`, `top_k` | Query Hybrid RAG (pgvector + graph via RRF) with citations |
+| **Hybrid RAG & Tuning** | `ogm_retrieval_query` | `dataset_id`, `query`, `mode`, `top_k`, `vector_weight`, `graph_weight`, `compare` | Query Hybrid RAG (pgvector + graph via RRF) with citations, ablation comparison, and failure-driven weight tuning |
 | **Codebase Ingestion** | `ogm_index_codebase` | `dataset_id`, `path` (or `directory_path`) | **Oneshot** index full codebase repository into OGM |
 | **Codebase Sync** | `ogm_sync_code_file` | `dataset_id`, `file_path`, `code`, `language` | Live incremental AST sync for single edited file (<15ms) |
 | **Symbol Search** | `ogm_search_code_symbols` | `dataset_id`, `q` (or `query`), `kind`, `limit` | Search codebase functions, classes, structs |
