@@ -11,7 +11,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Ruff](https://img.shields.io/badge/Linter-Ruff-D7FF64.svg)](https://docs.astral.sh/ruff/)
 
-[Overview](#status) · [Tools (29)](#tools) · [Installation](#install) · [Quick Setup](#automated-1-command-setup) · [Client Configs](#mcp-client-setup)
+[Overview](#status) · [Tools (29)](#tools) · [Integration Modes](#integration-modes-on-demand-skill-vs-always-on-directives) · [Installation](#install) · [Quick Setup](#automated-1-command-setup) · [Client Configs](#mcp-client-setup)
 
 </div>
 
@@ -95,6 +95,22 @@ git clone https://github.com/ardiannurcahya/ogm-mcp-skills.git "$HOME/src/ogm-mc
 cd "$HOME/src/ogm-mcp-skills"
 uv sync --locked
 ```
+
+## Integration Modes: On-Demand Skill vs. Always-On Directives
+
+Choose the integration pattern that best fits your workflow:
+
+| Integration Mode | Primary File | How It Works | Best For |
+| :--- | :--- | :--- | :--- |
+| **On-Demand Skill** | `SKILL.md` | Dynamically evaluated when user prompts match keyword triggers. | Modular setups where OGM is invoked only when explicitly needed. |
+| **Always-On Directive** | `AGENTS.md` / `CLAUDE.md` / `GEMINI.md` / `.cursor/rules/ogm.mdc` | Injected into the agent's system prompt on every session and turn. **No triggers required.** | Production codebases where agents must deterministically check memory, sync AST, and persist fixes. |
+
+### Enabling Always-On Mode
+Copy the directive example matching your AI harness into your workspace root:
+- **Universal / OpenClaw / Codex**: `cp examples/AGENTS.md.example AGENTS.md`
+- **Cursor**: `cp examples/cursor/.cursor/rules/ogm.mdc.example .cursor/rules/ogm.mdc`
+- **Claude Code**: `cp examples/claude-code/CLAUDE.md.example CLAUDE.md`
+- **Google Antigravity**: `cp examples/antigravity/GEMINI.md.example GEMINI.md`
 
 ## Configure
 

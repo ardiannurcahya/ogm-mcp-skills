@@ -1,8 +1,28 @@
-# OpenGraphMemory Integration Rule for Antigravity
+# OpenGraphMemory Integration Rule for Google Antigravity & Gemini CLI
 
-When working on this repository, you have access to the `ogm` skill and MCP server tools:
-- **Recall Memory First**: Before diagnosing bugs, investigating test failures, or writing code, invoke `ogm_recall_code_memory` or `ogm_memory_search` to check past verified fixes.
-- **Query Hybrid RAG**: When asked about system architecture or data flow, call `ogm_retrieval_query` with `mode="hybrid"`.
-- **Trace Blast Radius**: Before refactoring a function or class, call `ogm_get_code_call_graph` to inspect all callers.
-- **Sync Edits**: Call `ogm_sync_code_file` when editing files to update the Knowledge Graph in real-time.
-- **Record Verified Solutions**: After fixing a bug and verifying it with tests, call `ogm_record_code_fix`.
+When working in this repository, you have access to the `ogm` MCP server tools (`ogm_*`).
+You **MUST ALWAYS** follow this operational protocol without waiting for explicit prompt triggers:
+
+## 1. Recall Memory First (Phase 1)
+- Before diagnosing errors, investigating test failures, or writing code:
+  - Invoke `ogm_recall_code_memory` or `ogm_memory_search` to check past verified fixes and avoid repeating mistakes.
+  - Call `ogm_retrieval_query` (`mode="hybrid"`) to retrieve architecture specs and technical evidence.
+
+## 2. Navigation & Blast Radius (Phase 2)
+- Before refactoring or modifying a function or class:
+  - Call `ogm_search_code_symbols` to locate exact AST definitions.
+  - Call `ogm_get_code_call_graph` to inspect all callers and callees to understand the blast radius.
+
+## 3. Real-Time AST Sync (Phase 3)
+- While editing or generating code files:
+  - Call `ogm_sync_code_file` immediately after modifying a file to keep the Knowledge Graph updated in real-time (<15ms).
+
+## 4. Failure-Driven Hybrid RAG Tuning (Phase 4)
+- When querying documentation or complex architecture:
+  - Use `ogm_retrieval_query` with `compare=True` to observe differences between `vector` and `graph` candidate chunks.
+  - If retrieval misses structural links, tune with higher `graph_weight` (`0.7..0.9`). If vocabulary is sparse, use higher `vector_weight`.
+  - Record failed retrieval attempts with `ogm_memory_append_attempt(result="failed")`.
+
+## 5. Persist Verified Solutions (Phase 5)
+- After fixing a bug and verifying it with tests:
+  - Call `ogm_record_code_fix` with `file_path`, `title`, `goal`, `root_cause`, and verified `solution`.

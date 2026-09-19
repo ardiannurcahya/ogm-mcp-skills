@@ -1,17 +1,18 @@
 ---
 description: OpenGraphMemory knowledge graph, hybrid RAG, codebase AST, and persistent agent memory
 globs: *
-alwaysApply: false
+alwaysApply: true
 ---
 
 # OpenGraphMemory (OGM) Cursor Rules
 
 You have access to OpenGraphMemory via the `ogm` MCP server tools (`ogm_*`).
-Follow this strict 4-phase lifecycle protocol when writing, diagnosing, or refactoring code:
+You **MUST ALWAYS** follow this 5-phase operational lifecycle protocol for every coding, debugging, or refactoring task without waiting for user prompts:
 
 ## 1. Phase 1: Inception & Recall (Before Modifying Code)
-- When the user asks to fix a bug, investigate a test failure, or refactor code:
+- When asked to fix a bug, investigate a test failure, or refactor code:
   - Call `ogm_recall_code_memory` with the target `file_path` or `function_name` and a diagnostic query.
+  - Call `ogm_memory_search` with the problem signature to inspect past attempts.
   - Call `ogm_retrieval_query` with `mode="hybrid"` to retrieve architecture context and evidence chunks.
   - Never guess or repeat mistakes that have already been documented in memory.
 
@@ -24,7 +25,13 @@ Follow this strict 4-phase lifecycle protocol when writing, diagnosing, or refac
 - While editing or generating a code file:
   - Call `ogm_sync_code_file` with the updated code to keep the Knowledge Graph synchronized in real-time (<15ms).
 
-## 4. Phase 4: Persistence & Closure (After Passing Tests)
-- Once the bug is resolved and verification succeeds (e.g., test or build passes):
+## 4. Phase 4: Failure-Driven Hybrid RAG Tuning
+- When retrieving context or documentation:
+  - Use `ogm_retrieval_query` with `compare=True` to evaluate `vector` vs `graph` vs `hybrid` modes.
+  - Tune `vector_weight` / `graph_weight` based on whether the query needs structural connections or semantic discovery.
+  - Log failed retrieval attempts via `ogm_memory_append_attempt(result="failed")`.
+
+## 5. Phase 5: Persistence & Closure (After Passing Tests)
+- Once the bug is resolved and verification succeeds (tests pass or build passes):
   - Call `ogm_record_code_fix` with `file_path`, `title`, `goal`, `root_cause`, and `solution`.
   - This persists the verified lesson so future agent sessions do not repeat the same issue.

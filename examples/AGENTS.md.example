@@ -1,0 +1,46 @@
+# OpenGraphMemory (OGM) Always-On Agent Operating Directive
+
+You are an expert AI software engineer with direct access to the **OpenGraphMemory (`ogm`) MCP Server**.
+When working in this repository, you **MUST ALWAYS** follow this 5-phase operational protocol deterministically for every coding, debugging, and refactoring task. **Do not wait for explicit user trigger phrases.**
+
+---
+
+## 🎯 Mandatory 5-Phase Operational Lifecycle
+
+### Phase 1: Inception & Memory Recall (Before Modifying Code)
+Before proposing changes, investigating errors, or reading arbitrary files:
+1. **Recall Prior Lessons**: Call `ogm_recall_code_memory` with the affected file path, function name, or error message to inspect verified past bugfixes and refactoring outcomes.
+2. **Search Operational Memory**: Call `ogm_memory_search` with the problem signature to identify known failure modes or prior attempts.
+3. **Query Hybrid RAG**: When inquiring about system architecture, data flows, or documentation, call `ogm_retrieval_query` (`mode="hybrid"`) to fetch dense-vector and knowledge-graph evidence with verbatim line citations.
+4. **Never repeat known mistakes**: If past memory documents a failed hypothesis or prohibited approach, immediately discard that hypothesis.
+
+### Phase 2: Navigation & Blast Radius Analysis
+Before altering any class, function, or interface:
+1. **Locate Canonical AST Symbols**: Call `ogm_search_code_symbols` to inspect exact symbol definitions and signatures.
+2. **Inspect Call Graphs & Blast Radius**: Call `ogm_get_code_call_graph` with the symbol ID to identify all inbound callers and outbound callees across the entire codebase.
+3. **Review Hub Nodes**: Call `ogm_get_code_chunks` to evaluate high-degree centrality nodes and assess architectural impact before editing.
+
+### Phase 3: Real-Time AST Sync (During Code Edits)
+While editing or refactoring code files:
+1. **Incremental Live Sync**: Call `ogm_sync_code_file` with `file_path`, updated `code`, and `language` immediately after modifying a file. This updates the Codebase Knowledge Graph in real-time (<15ms).
+
+### Phase 4: Failure-Driven Hybrid RAG Tuning
+When formulating or tuning retrieval queries:
+1. **Pre-flight Failure Recall**: Query `ogm_memory_search(q="retrieval failure <topic>")` before running ambiguous or high-stakes retrieval tasks.
+2. **Ablation Comparison**: Use `ogm_retrieval_query` with `compare=True` to evaluate parallel results from `vector`, `graph`, and `hybrid` modes.
+3. **Dynamic Calibration**:
+   - If multi-hop entity relationships or call chains are missing: increase `graph_weight` (`0.7..0.9`) or set `mode="graph"`.
+   - If vocabulary is descriptive or entities are sparse: increase `vector_weight` (`0.7..0.9`) or set `mode="vector"`.
+4. **Log Failed Attempts**: If a retrieval query returns irrelevant context leading to an incorrect hypothesis, log the failure using `ogm_memory_append_attempt(result="failed")` or downvote via `ogm_memory_feedback_episode(score=-1)`.
+
+### Phase 5: Persistence & Closure (After Verification)
+Once the task is implemented and verified (tests pass, linter passes, or build succeeds):
+1. **Record Code Fix**: Call `ogm_record_code_fix` with `file_path`, `title`, `goal`, `root_cause`, and verified `solution`.
+2. **Finalize Episode**: If an active operational episode was opened, call `ogm_memory_record_outcome` with `status="resolved"` and verified test command metrics. This promotes the pattern via Bayesian confidence scoring for future agent sessions.
+
+---
+
+## 🚫 Zero-Loop Enforcement & Execution Rules
+- **NEVER** run manual `curl` commands to `/v1/...` REST endpoints.
+- **NEVER** inspect raw OpenAPI schemas or execute ad-hoc Node.js/Python HTTP scrapers.
+- **ALWAYS** invoke the dedicated `ogm_*` MCP tool in a single, oneshot tool call.
